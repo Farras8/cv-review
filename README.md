@@ -53,9 +53,5 @@ Output ulasan CV mengikuti skema berikut:
 - `line_by_line`: Analisis per bagian CV.
 - `action_plan`: Rencana aksi mingguan untuk perbaikan CV.
 
-## Lisensi
-MIT
-
----
 
 **CV Review Service** membantu Anda mendapatkan feedback profesional dan terstruktur untuk meningkatkan kualitas CV Anda secara otomatis.
