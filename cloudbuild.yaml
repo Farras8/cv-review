@@ -1,0 +1,35 @@
+steps:
+  # 1. Bangun container image menggunakan Dockerfile.
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/cv-review-repo/cv-review-service:$BUILD_ID'
+      - '.'
+
+  # 2. Unggah container image ke Artifact Registry.
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/cv-review-repo/cv-review-service:$BUILD_ID'
+
+  # 3. Deploy ke Cloud Run.
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'cv-review-service' # Nama layanan di Cloud Run
+      - '--image'
+      - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/cv-review-repo/cv-review-service:$BUILD_ID'
+      - '--region'
+      - 'asia-southeast2' # Pilih region yang paling dekat, contoh: Jakarta
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated' # Izinkan akses publik ke layanan
+      # Gunakan --set-secrets untuk menautkan variabel ke secret.
+      - '--set-secrets=GOOGLE_API_KEYS=geminikey:latest'
+
+# Simpan image di Artifact Registry untuk re-deployment cepat.
+images:
+  - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/cv-review-repo/cv-review-service:$BUILD_ID'
